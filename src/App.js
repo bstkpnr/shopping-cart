@@ -1,11 +1,12 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import { products } from "./constants";
 import ProductsGrid from "./components/ProductsGrid";
 
-class App extends Component {
-  state = {
+function App() {
+  const [item,setItem] =useState({
+
     cart: [
       { id: 0, value: 0 },
       { id: 1, value: 0 },
@@ -15,51 +16,49 @@ class App extends Component {
       { id: 5, value: 0 },
     ],
     itemCount: 0,
-  };
+})
 
-  handleIncrement = (product) => {
+  const handleIncrement = (product) => {
     // cart array'inin kopyasını oluştur
-    const cart = [...this.state.cart];
+    const cart = [...item.cart];
     // parametre olarak gelen product'ın cart array'i içerisindeki index'ini bul
     const index = cart.indexOf(product);
     // kopyalanan cart array'ine bu ürünü ekle ve value property'sini 1 artır
     cart[index] = { ...cart[index] };
     cart[index].value++;
     // getItemCount fonksiyonunu kullanarak sepetteki ürün sayısını bul
-    const itemCount = this.getItemCount(cart);
+    const itemCount = getItemCount(cart);
     // state'i güncelle
-    this.setState({ cart, itemCount });
+    setItem({ cart, itemCount });
   };
 
-  handleDecrement = (product) => {
-    const cart = [...this.state.cart];
+  const handleDecrement = (product) => {
+    const cart = [...item.cart];
     const index = cart.indexOf(product);
     cart[index] = { ...cart[index] };
     cart[index].value--;
-    const itemCount = this.getItemCount(cart);
-    this.setState({ cart, itemCount });
+    const itemCount = getItemCount(cart);
+    setItem({ cart, itemCount });
   };
 
-  getItemCount = (cart) => {
+  const getItemCount = (cart) => {
     // Sepetteki toplam ürün sayısını bul
     let itemCount = cart.reduce((total, product) => total + product.value, 0);
 
     return itemCount;
   };
-
-  render() {
     return (
       <div className="App">
-        <Navbar totalItems={this.state.itemCount} />
+        <Navbar totalItems={item.itemCount} />
         <ProductsGrid
           products={products}
-          cart={this.state.cart}
-          onIncrement={this.handleIncrement}
-          onDecrement={this.handleDecrement}
+          cart={item.cart}
+          onIncrement={handleIncrement}
+          onDecrement={handleDecrement}
         />
       </div>
     );
   }
-}
+
 
 export default App;
